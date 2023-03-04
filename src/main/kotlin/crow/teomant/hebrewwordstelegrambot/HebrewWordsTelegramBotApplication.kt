@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class HebrewWordsTelegramBotApplication
 
 fun main(args: Array<String>) {
-	runApplication<HebrewWordsTelegramBotApplication>(*args)
+    runApplication<HebrewWordsTelegramBotApplication>(*args)
 }
