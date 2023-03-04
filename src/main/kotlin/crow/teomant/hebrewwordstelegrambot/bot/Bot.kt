@@ -13,12 +13,14 @@ import crow.teomant.hebrewwordstelegrambot.documents.category.Category
 import crow.teomant.hebrewwordstelegrambot.documents.category.CategoryRepository
 import crow.teomant.hebrewwordstelegrambot.documents.user.User
 import crow.teomant.hebrewwordstelegrambot.documents.user.UserRepository
+import crow.teomant.hebrewwordstelegrambot.documents.user.UserWord
 import crow.teomant.hebrewwordstelegrambot.documents.word.Word
 import crow.teomant.hebrewwordstelegrambot.documents.word.WordRepository
 import jakarta.annotation.PostConstruct
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class BotStarter(
@@ -63,20 +65,24 @@ fun startBot(
 
                 val user = getUser(userRepository)
 
-                sendQuiz(this.bot, this.message.chat.id, user, wordRepository)
+                sendQuiz(this.bot, this.message.chat.id, user, wordRepository, userRepository)
             }
             command("addWords") {
                 if (checkIfPrivateChat()) return@command
 
                 val user = getUser(userRepository)
                 val newWords = wordRepository.findAll()
-                        .filter { !user.words.contains(it.id.toString()) }
+                        .filter { !user.words.map { it.id }.contains(it.id.toString()) }
                         .shuffled()
                         .asSequence()
-                        .take(5)
+                        .take(10)
 
-                user.words.addAll(newWords.map { it.id.toString() })
-                userRepository.save(user)
+                user.words.addAll(newWords.map { UserWord(it.id.toString(), Date(), Date()) })
+                try {
+                    userRepository.save(user)
+                } catch (e: Exception) {
+                    println(e)
+                }
 
                 bot.sendMessage(ChatId.fromId(message.chat.id), "Добавлены слова: ${newWords.joinToString { "${it.he} (${it.ru})" }}")
             }
@@ -129,7 +135,7 @@ fun startBot(
             pollAnswer {
                 val user = userRepository.findByTelegramId(pollAnswer.user.id.toString())!!
                 if (user.auto) {
-                    sendQuiz(this.bot, this.pollAnswer.user.id, user, wordRepository)
+                    sendQuiz(this.bot, this.pollAnswer.user.id, user, wordRepository, userRepository)
                 }
             }
             text {
@@ -141,20 +147,28 @@ fun startBot(
     }.startPolling()
 }
 
-private fun sendQuiz(bot: Bot, id: Long, user: User, wordRepository: WordRepository) {
+private fun sendQuiz(bot: Bot, id: Long, user: User, wordRepository: WordRepository, userRepository: UserRepository) {
     if (user.words.size < 4) {
         bot.sendMessage(ChatId.fromId(id), "Словарный запас слишком мал")
     }
-    val words = wordRepository.findAllById(
-            user.words.toMutableList()
-                    .shuffled()
-                    .asSequence()
-                    .take(4)
-                    .toList()
-    )
+    val wordIds = user.words.toMutableList()
+            .map { it.id }
+            .shuffled()
+            .asSequence()
+            .take(4)
+            .toMutableSet()
+
+    wordIds.addAll(user.words.sortedBy { it.lastUsed }.take(5).map { it.id }.shuffled().take(3))
+    wordIds.addAll(user.words.sortedBy { it.added }.takeLast(5).map { it.id }.shuffled().take(3))
+
+    val words = wordRepository.findAllById(wordIds.shuffled().take(5).toList()).toList()
 
     val correct = words.shuffled()[0]
     val shuffled = words.shuffled().map { it.ru }.toList()
+
+    user.words.stream().filter { it.id == correct.id.toString() }.findAny().get().lastUsed = Date()
+
+    userRepository.save(user)
 
     bot.sendPoll(
             chatId = ChatId.fromId(id),

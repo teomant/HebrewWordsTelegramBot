@@ -6,6 +6,7 @@ import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
+import java.util.*
 
 @Document(collection = "hebrew.user")
 @ToString(of = ["id", "chatId"])
@@ -15,7 +16,13 @@ data class User(
         val id: ObjectId,
         @Indexed(unique = true)
         val telegramId: String,
-        val words: MutableSet<String>,
+        val words: MutableSet<UserWord>,
         var auto: Boolean = false,
         val admin: Boolean = false
+)
+
+data class UserWord(
+        var id: String,
+        var added: Date,
+        var lastUsed: Date
 )
