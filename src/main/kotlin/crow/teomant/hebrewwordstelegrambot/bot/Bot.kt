@@ -16,11 +16,9 @@ import crow.teomant.hebrewwordstelegrambot.documents.user.UserRepository
 import crow.teomant.hebrewwordstelegrambot.documents.word.Word
 import crow.teomant.hebrewwordstelegrambot.documents.word.WordRepository
 import jakarta.annotation.PostConstruct
-import org.apache.logging.log4j.util.Strings
 import org.bson.types.ObjectId
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import kotlin.random.Random
 
 @Service
 class BotStarter(
@@ -135,7 +133,7 @@ fun startBot(
                 }
             }
             text {
-                if (!(message.text?.startsWith("/") ?: true)) {
+                if (message.text?.startsWith("/") == false) {
                     bot.sendMessage(ChatId.fromId(message.chat.id), "${message.text}")
                 }
             }
@@ -184,6 +182,6 @@ private fun CommandHandlerEnvironment.getUser(userRepository: UserRepository): U
                 ?: userRepository.save(User(ObjectId.get(), message.chat.id.toString(), mutableSetOf(), admin = !adminExist))
     } catch (e: Exception) {
         bot.sendMessage(ChatId.fromId(message.chat.id), "Ошибка, не могу установить пользователя")
-        throw e;
+        throw e
     }
 }
