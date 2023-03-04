@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class HebreWordsTelegramBotApplication
+class HebrewWordsTelegramBotApplication
 
 fun main(args: Array<String>) {
-	runApplication<HebreWordsTelegramBotApplication>(*args)
+	runApplication<HebrewWordsTelegramBotApplication>(*args)
 }

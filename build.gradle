@@ -19,12 +19,19 @@ configurations {
 }
 
 repositories {
+
+	maven { url "https://jitpack.io" }
 	mavenCentral()
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2'
+
+	implementation 'io.github.kotlin-telegram-bot.kotlin-telegram-bot:telegram:6.0.7'
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
