@@ -1,0 +1,62 @@
+[
+  {
+    "name": "Бытовая техника",
+    "label": "homeAppliances"
+  },
+  {
+    "name": "Местоимения",
+    "label": "pronouns"
+  },
+  {
+    "name": "Глаголы",
+    "label": "verbs"
+  },
+  {
+    "name": "Члены семьи",
+    "label": "familyMembers"
+  },
+  {
+    "name": "Животные",
+    "label": "animals"
+  },
+  {
+    "name": "Мебель",
+    "label": "furniture"
+  },
+  {
+    "name": "Места",
+    "label": "places"
+  },
+  {
+    "name": "Фрукты",
+    "label": "fruits"
+  },
+  {
+    "name": "Овощи",
+    "label": "vegetables"
+  },
+  {
+    "name": "Прилагательные",
+    "label": "adjectives"
+  },
+  {
+    "name": "Числа",
+    "label": "numbers"
+  },
+  {
+    "name": "Продукты",
+    "label": "foods"
+  },
+  {
+    "name": "Цвета",
+    "label": "colors"
+  },
+  {
+    "name": "Посуда",
+    "label": "dishes"
+  },
+  {
+    "name": "Профессия",
+    "label": "professions"
+  }
+]

@@ -18,11 +18,18 @@ data class User(
         val telegramId: String,
         val words: MutableSet<UserWord>,
         var auto: Boolean = false,
-        val admin: Boolean = false
+        val admin: Boolean = false,
+        val preferable: MutableSet<UserCategory> = mutableSetOf(),
 )
 
 data class UserWord(
         var id: String,
         var added: Date,
-        var lastUsed: Date
+        var lastUsed: Date,
+        var categories: Set<String>
+)
+
+data class UserCategory(
+        var id: String,
+        var name: String
 )
