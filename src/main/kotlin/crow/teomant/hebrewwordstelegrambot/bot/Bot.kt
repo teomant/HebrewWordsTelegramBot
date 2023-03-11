@@ -60,7 +60,11 @@ fun startBot(
                         "/word для получения слова\n " +
                         "/auto для переключения опции получения нового слова после каждого ответа\n" +
                         "/addWords для добавления пяти новых слов в свой словарный запас\n" +
-                        "/addWordsFromCategory для добавления пяти новых слов в свой словарный запас из конкретной категории\n")
+                        "/addWordsFromCategory для добавления пяти новых слов в свой словарный запас из конкретной категории\n" +
+                        "/addPreferableCategory выбрать предпочитаемые категории из своего словаря\n" +
+                        "/removePreferableCategory убрать категорию из списка предпочитаемых\n" +
+                        "/clearPreferableCategory очистить список предпочитаемых\n" +
+                        "/clearWords очистить словарь\n")
                 if (user.admin) {
                     bot.sendMessage(ChatId.fromId(message.chat.id), "Ты админ, поздравляю!")
                 }
@@ -250,11 +254,6 @@ fun startBot(
                 val user = userRepository.findByTelegramId(pollAnswer.user.id.toString())!!
                 if (user.auto) {
                     sendQuiz(this.bot, this.pollAnswer.user.id, user, wordRepository, userRepository)
-                }
-            }
-            text {
-                if (message.text?.startsWith("/") == false) {
-                    bot.sendMessage(ChatId.fromId(message.chat.id), "${message.text}")
                 }
             }
         }
