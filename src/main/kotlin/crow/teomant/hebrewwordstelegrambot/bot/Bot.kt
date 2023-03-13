@@ -267,17 +267,18 @@ private fun sendQuiz(bot: Bot, id: Long, user: User, wordRepository: WordReposit
     if (userWords.size < 4) {
         bot.sendMessage(ChatId.fromId(id), "Словарный запас слишком мал")
     }
-    val wordIds = userWords.toMutableList()
-            .map { it.id }
+    val selected = userWords.toMutableList()
             .shuffled()
             .asSequence()
-            .take(4)
+            .take(6)
             .toMutableSet()
 
-    wordIds.addAll(userWords.sortedBy { it.lastUsed }.take(5).map { it.id }.shuffled().take(3))
-    wordIds.addAll(userWords.sortedBy { it.added }.takeLast(5).map { it.id }.shuffled().take(3))
+    selected.addAll(userWords.sortedBy { it.lastUsed }.take(5).shuffled().take(3))
+    selected.addAll(userWords.sortedBy { it.lastUsed }.dropLast(3).sortedBy { it.added }.takeLast(10).shuffled().take(3))
 
-    val words = wordRepository.findAllById(wordIds.shuffled().take(5).toList()).toList()
+    val words = wordRepository.findAllById(
+            selected.sortedBy { it.lastUsed }.dropLast(3).shuffled().take(5).toList().map { it.id }
+    ).toList()
 
     val correct = words.shuffled()[0]
     val shuffled = words.shuffled().map { it.ru }.toList()
